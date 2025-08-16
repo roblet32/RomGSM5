@@ -180,8 +180,10 @@ process.on('uncaughtException', (error) => {
 
 // Start server
 const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
-    logger.info(`Server running on port ${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+const HOST = process.env.HOST || '0.0.0.0'; // Listen on all network interfaces
+const server = app.listen(PORT, HOST, () => {
+    logger.info(`Server running on ${HOST}:${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
+    logger.info(`Access from other devices using: http://[YOUR_IP]:${PORT}`);
 });
 
 // Handle server errors
