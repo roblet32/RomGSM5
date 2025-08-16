@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Orden de Servicio | ROCKETGS</title>
+  <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+  <main>
+    <div class="container">
+      <h1>Crear nueva orden de servicio</h1>
+      <% if (typeof error !== 'undefined') { %>
+        <div class="error"><%= error %></div>
+      <% } %>
+      <form action="<%= isEdit && orden ? ('/recepcion/ordenes/' + orden._id + '/editar') : '/recepcion/ordenes/nueva' %>" method="POST">
+        <div class="form-group">
+          <label for="dispositivo">Dispositivo</label>
+          <select name="dispositivo" id="dispositivo" required>
+            <% dispositivos.forEach(dispositivo => { %>
+              <option value="<%= dispositivo._id %>" <%= (isEdit && orden && orden.dispositivo.toString() === dispositivo._id.toString()) || (formData && formData.dispositivo === dispositivo._id.toString()) ? 'selected' : '' %>>
+                <%= dispositivo.cliente.nombre %> - <%= dispositivo.marca %> <%= dispositivo.modelo %> (<%= dispositivo.tipo %>)
+              </option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="tipoServicio">Tipo de servicio</label>
+          <select name="tipoServicio" id="tipoServicio" required>
+            <option value="reparacion" <%= (isEdit && orden && orden.tipoServicio === 'reparacion') || (formData && formData.tipoServicio === 'reparacion') ? 'selected' : '' %>>Reparación</option>
+            <option value="mantenimiento" <%= (isEdit && orden && orden.tipoServicio === 'mantenimiento') || (formData && formData.tipoServicio === 'mantenimiento') ? 'selected' : '' %>>Mantenimiento</option>
+            <option value="instalacion" <%= (isEdit && orden && orden.tipoServicio === 'instalacion') || (formData && formData.tipoServicio === 'instalacion') ? 'selected' : '' %>>Instalación</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="prioridad">Prioridad</label>
+          <select name="prioridad" id="prioridad">
+            <option value="baja" <%= (isEdit && orden && orden.prioridad === 'baja') || (formData && formData.prioridad === 'baja') ? 'selected' : '' %>>Baja</option>
+            <option value="media" <%= (isEdit && orden && orden.prioridad === 'media') || (formData && formData.prioridad === 'media') ? 'selected' : '' %>>Media</option>
+            <option value="alta" <%= (isEdit && orden && orden.prioridad === 'alta') || (formData && formData.prioridad === 'alta') ? 'selected' : '' %>>Alta</option>
+            <option value="urgente" <%= (isEdit && orden && orden.prioridad === 'urgente') || (formData && formData.prioridad === 'urgente') ? 'selected' : '' %>>Urgente</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="diagnosticoInicial">Diagnóstico inicial</label>
+          <textarea name="diagnosticoInicial" id="diagnosticoInicial"><%= (isEdit && orden && orden.diagnosticoInicial) ? orden.diagnosticoInicial : (formData && formData.diagnosticoInicial ? formData.diagnosticoInicial : '') %></textarea>
+        </div>
+        <div class="form-group">
+          <label for="observaciones">Observaciones</label>
+          <textarea name="observaciones" id="observaciones"><%= (isEdit && orden && orden.observaciones) ? orden.observaciones : (formData && formData.observaciones ? formData.observaciones : '') %></textarea>
+        </div>
+        <button type="submit"><%= isEdit ? 'Actualizar orden' : 'Crear orden' %></button>
+      </form>
+      <div style="margin-top: 18px; display: flex; gap: 10px;">
+        <button type="button" onclick="history.back()">Volver</button>
+        <a href="/dashboard" class="home-button">Ir al Dashboard</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

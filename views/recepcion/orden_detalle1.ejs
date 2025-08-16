@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Orden | ROCKETGSM</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <style>
+    .detail-section {
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid #e2e8f0;
+    }
+    .section-title {
+      color: var(--primary-dark);
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--primary);
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .info-label {
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 14px;
+    }
+    .info-value {
+      color: var(--text);
+      font-size: 16px;
+      padding: 8px 12px;
+      background: var(--background);
+      border-radius: var(--border-radius);
+      border: 1px solid #e2e8f0;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .status-pendiente { 
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white; 
+    }
+    .status-asignada { 
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white; 
+    }
+    .status-cotizacion_enviada { 
+      background: linear-gradient(135deg, var(--secondary), #8e44ad);
+      color: white; 
+    }
+    .status-aprobada { 
+      background: linear-gradient(135deg, var(--success), #2ecc71);
+      color: white; 
+    }
+    .status-en_proceso { 
+      background: linear-gradient(135deg, #e67e22, #d35400);
+      color: white; 
+    }
+    .status-finalizada { 
+      background: linear-gradient(135deg, var(--success), #2ecc71);
+      color: white; 
+    }
+    .status-cancelada { 
+      background: linear-gradient(135deg, var(--danger), #c0392b);
+      color: white; 
+    }
+    .payment-status {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .payment-no_pagada {
+      background: linear-gradient(135deg, var(--danger), #c0392b);
+      color: white;
+    }
+    .payment-parcial {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white;
+    }
+    .payment-pagada {
+      background: linear-gradient(135deg, var(--success), #2ecc71);
+      color: white;
+    }
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .photo-item {
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      border: 2px solid #e2e8f0;
+      transition: transform var(--transition);
+    }
+    .photo-item:hover {
+      transform: scale(1.05);
+      border-color: var(--primary);
+    }
+    .photo-item img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    .btn-action {
+      padding: 10px 20px;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      display: inline-block;
+      transition: all var(--transition);
+      font-weight: 500;
+    }
+    .btn-edit { 
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white; 
+    }
+    .btn-delete { 
+      background: linear-gradient(135deg, var(--danger), #c0392b);
+      color: white; 
+    }
+    .btn-back { 
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white; 
+    }
+    .btn-action:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    }
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      border-radius: var(--border-radius);
+      font-family: inherit;
+      font-size: 14px;
+      transition: border-color var(--transition);
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    .table-container {
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      margin-top: 16px;
+    }
+    .table-container table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table-container th,
+    .table-container td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .table-container th {
+      background: var(--background);
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    .table-container tr:hover {
+      background: var(--background);
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text);
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      border: 1px solid #e2e8f0;
+    }
+    .empty-state p {
+      font-size: 16px;
+      margin: 0;
+      color: var(--text);
+    }
+    .header-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .quote-card {
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid #e2e8f0;
+    }
+    .quote-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .quote-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    .quote-meta {
+      display: flex;
+      gap: 16px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .quote-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .quote-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .quote-label {
+      font-weight: 600;
+      color: var(--primary-dark);
+      font-size: 13px;
+    }
+    .quote-value {
+      color: var(--text);
+      font-size: 15px;
+      padding: 6px 10px;
+      background: var(--background);
+      border-radius: var(--border-radius);
+      border: 1px solid #e2e8f0;
+    }
+    .payment-form {
+      background: var(--background);
+      border-radius: var(--border-radius);
+      padding: 16px;
+      margin-top: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .payment-form.hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="container">
+      <div class="header-actions">
+        <h1>Detalle de Orden de Servicio</h1>
+        <div class="action-buttons">
+          <a href="/recepcion/dashboard" class="btn-action btn-back">Volver al Dashboard</a>
+        </div>
+      </div>
+
+      <!-- Información del Cliente -->
+      <div class="detail-section">
+        <h2 class="section-title">📞 Información del Cliente</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Nombre</span>
+            <span class="info-value"><%= orden && orden.dispositivo && orden.dispositivo.cliente ? orden.dispositivo.cliente.nombre : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Teléfono</span>
+            <span class="info-value"><%= orden && orden.dispositivo && orden.dispositivo.cliente && orden.dispositivo.cliente.telefono ? orden.dispositivo.cliente.telefono : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value"><%= orden && orden.dispositivo && orden.dispositivo.cliente && orden.dispositivo.cliente.email ? orden.dispositivo.cliente.email : 'N/A' %></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información del Dispositivo -->
+      <div class="detail-section">
+        <h2 class="section-title">💻 Información del Dispositivo</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Tipo</span>
+            <span class="info-value"><%= orden && orden.dispositivo ? orden.dispositivo.tipo : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Marca</span>
+            <span class="info-value"><%= orden && orden.dispositivo ? orden.dispositivo.marca : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Modelo</span>
+            <span class="info-value"><%= orden && orden.dispositivo ? orden.dispositivo.modelo : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Número de Serie</span>
+            <span class="info-value"><%= orden && orden.dispositivo ? orden.dispositivo.numeroSerie || 'N/A' : 'N/A' %></span>
+          </div>
+        </div>
+        
+        <div class="info-item" style="grid-column: 1 / -1;">
+          <span class="info-label">Descripción del Problema</span>
+          <span class="info-value"><%= orden && orden.dispositivo ? orden.dispositivo.descripcionProblema : 'N/A' %></span>
+        </div>
+
+        <% if (orden && orden.dispositivo && orden.dispositivo.fotos && orden.dispositivo.fotos.length > 0) { %>
+          <div class="info-item" style="grid-column: 1 / -1;">
+            <span class="info-label">Fotos del Dispositivo</span>
+            <div class="photos-grid">
+              <% orden.dispositivo.fotos.forEach(function(foto) { %>
+                <div class="photo-item">
+                  <img src="/uploads/<%= foto %>" alt="Foto del dispositivo" title="<%= foto %>">
+                </div>
+              <% }); %>
+            </div>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Datos de la Orden -->
+      <div class="detail-section">
+        <h2 class="section-title">📋 Datos de la Orden</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Tipo de Servicio</span>
+            <span class="info-value"><%= orden && orden.tipoServicio ? orden.tipoServicio : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Prioridad</span>
+            <span class="info-value"><%= orden && orden.prioridad ? orden.prioridad : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Estado</span>
+            <span class="status-badge status-<%= orden && orden.estado ? orden.estado : 'pendiente' %>">
+              <%= orden && orden.estado ? orden.estado.replace('_', ' ') : 'N/A' %>
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Técnico Asignado</span>
+            <span class="info-value"><%= orden && orden.tecnicoAsignado && orden.tecnicoAsignado.nombre ? orden.tecnicoAsignado.nombre : 'No asignado' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de Creación</span>
+            <span class="info-value"><%= orden && orden.fechaCreacion ? new Date(orden.fechaCreacion).toLocaleString('es-ES') : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de Asignación</span>
+            <span class="info-value"><%= orden && orden.fechaAsignacion ? new Date(orden.fechaAsignacion).toLocaleString('es-ES') : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de Inicio</span>
+            <span class="info-value"><%= orden && orden.fechaInicio ? new Date(orden.fechaInicio).toLocaleString('es-ES') : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de Finalización</span>
+            <span class="info-value"><%= orden && orden.fechaFinalizacion ? new Date(orden.fechaFinalizacion).toLocaleString('es-ES') : 'N/A' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Fecha de Entrega</span>
+            <span class="info-value"><%= orden && orden.fechaEntrega ? new Date(orden.fechaEntrega).toLocaleString('es-ES') : 'N/A' %></span>
+          </div>
+        </div>
+
+        <% if (orden && orden.diagnosticoInicial) { %>
+          <div class="info-item" style="grid-column: 1 / -1;">
+            <span class="info-label">Diagnóstico Inicial</span>
+            <span class="info-value"><%= orden.diagnosticoInicial %></span>
+          </div>
+        <% } %>
+
+        <% if (orden && orden.observaciones) { %>
+          <div class="info-item" style="grid-column: 1 / -1;">
+            <span class="info-label">Observaciones</span>
+            <span class="info-value"><%= orden.observaciones %></span>
+          </div>
+        <% } %>
+
+        <% if (orden && orden.trabajoRealizado) { %>
+          <div class="info-item" style="grid-column: 1 / -1;">
+            <span class="info-label">Trabajo Realizado</span>
+            <span class="info-value"><%= orden.trabajoRealizado %></span>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- Pagos -->
+      <div class="detail-section">
+        <h2 class="section-title">💰 Información de Pagos</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Estado de Pago</span>
+            <span class="payment-status payment-<%= orden && orden.estadoPago ? orden.estadoPago : 'no_pagada' %>">
+              <% if (orden && orden.estadoPago === 'no_pagada') { %>
+                No pagada
+              <% } else if (orden && orden.estadoPago === 'parcial') { %>
+                Pago parcial
+              <% } else { %>
+                Pagada
+              <% } %>
+            </span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Monto Total</span>
+            <span class="info-value">$<%= cotizacionAprobada ? cotizacionAprobada.total.toFixed(2) : '0.00' %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Monto Pagado</span>
+            <span class="info-value">$<%= orden && orden.montoPagado ? orden.montoPagado.toFixed(2) : '0.00' %></span>
+          </div>
+        </div>
+
+        <% if (cotizacionAprobada) { %>
+          <div class="action-buttons">
+            <button id="togglePagoBtn" class="btn-action btn-edit">
+              ✏️ Editar Monto Pagado
+            </button>
+          </div>
+          
+          <form id="editarPagoForm" action="/recepcion/ordenes/<%= orden._id %>/pago" method="POST" class="payment-form hidden">
+            <div class="form-group">
+              <label for="monto">Monto a Pagar:</label>
+              <input type="number" name="monto" id="monto" min="0" step="0.01" value="<%= orden && orden.montoPagado ? orden.montoPagado : 0 %>" required>
+            </div>
+            <button type="submit" class="btn-action btn-edit">💾 Actualizar Pago</button>
+          </form>
+        <% } %>
+      </div>
+
+      <!-- Cotizaciones -->
+      <div class="detail-section">
+        <h2 class="section-title">💰 Cotizaciones Asociadas</h2>
+        
+        <% if (!cotizaciones || cotizaciones.length === 0) { %>
+          <div class="empty-state">
+            <p>No hay cotizaciones registradas para esta orden.</p>
+          </div>
+        <% } else { %>
+          <% cotizaciones.forEach(function(c) { %>
+            <div class="quote-card">
+              <div class="quote-header">
+                <div class="quote-title">Cotización #<%= c._id.toString().slice(-6) %></div>
+                <div class="quote-meta">
+                  <span>📅 <%= new Date(c.fechaCreacion).toLocaleString('es-ES') %></span>
+                  <span class="status-badge status-<%= c.estado %>"><%= c.estado.replace('_', ' ') %></span>
+                  <span>💰 $<%= c.total.toFixed(2) %></span>
+                </div>
+              </div>
+              
+              <div class="quote-details">
+                <div class="quote-detail">
+                  <span class="quote-label">Mano de Obra</span>
+                  <span class="quote-value"><%= c.manoDeObra.descripcion %> (<%= c.manoDeObra.horas %>h x $<%= c.manoDeObra.precioPorHora %>/h)</span>
+                </div>
+                <div class="quote-detail">
+                  <span class="quote-label">Subtotal Mano de Obra</span>
+                  <span class="quote-value">$<%= c.subtotalManoObra.toFixed(2) %></span>
+                </div>
+                <div class="quote-detail">
+                  <span class="quote-label">Subtotal Materiales</span>
+                  <span class="quote-value">$<%= c.subtotalMateriales.toFixed(2) %></span>
+                </div>
+                <div class="quote-detail">
+                  <span class="quote-label">Descuento</span>
+                  <span class="quote-value">$<%= c.descuento ? c.descuento.toFixed(2) : '0.00' %></span>
+                </div>
+                <div class="quote-detail">
+                  <span class="quote-label">Total</span>
+                  <span class="quote-value"><strong>$<%= c.total.toFixed(2) %></strong></span>
+                </div>
+              </div>
+
+              <% if (c.observaciones) { %>
+                <div class="quote-detail" style="grid-column: 1 / -1;">
+                  <span class="quote-label">Observaciones</span>
+                  <span class="quote-value"><%= c.observaciones %></span>
+                </div>
+              <% } %>
+
+              <% if (c.itemsInventario && c.itemsInventario.length > 0) { %>
+                <div class="table-container">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th>Categoría</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% c.itemsInventario.forEach(function(item) { %>
+                        <tr>
+                          <td><%= item.inventarioItem ? item.inventarioItem.nombre : 'N/A' %></td>
+                          <td><%= item.inventarioItem ? item.inventarioItem.categoria : 'N/A' %></td>
+                          <td><%= item.cantidad %></td>
+                          <td>$<%= item.precioUnitario.toFixed(2) %></td>
+                          <td>$<%= item.subtotal.toFixed(2) %></td>
+                        </tr>
+                      <% }); %>
+                    </tbody>
+                  </table>
+                </div>
+              <% } %>
+            </div>
+          <% }); %>
+        <% } %>
+      </div>
+
+      <div class="footer-actions">
+        <a href="/recepcion/ordenes" class="btn-action btn-back">📋 Volver a la Lista</a>
+        <a href="/recepcion/ordenes/<%= orden._id %>/editar" class="btn-action btn-edit">✏️ Editar Orden</a>
+        <form action="/recepcion/ordenes/<%= orden._id %>/eliminar" method="POST" style="display:inline;" onsubmit="return confirm('¿Seguro que deseas eliminar esta orden? Esta acción no se puede deshacer y eliminará la cotización asociada.');">
+          <button type="submit" class="btn-action btn-delete">🗑️ Eliminar Orden</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Mostrar/ocultar el formulario de pago
+    document.addEventListener('DOMContentLoaded', function() {
+      const toggleButton = document.getElementById('togglePagoBtn');
+      const form = document.getElementById('editarPagoForm');
+      
+      if (toggleButton && form) {
+        toggleButton.addEventListener('click', function(e) {
+          e.preventDefault();
+          form.classList.toggle('hidden');
+          
+          // Cambiar el texto del botón
+          if (form.classList.contains('hidden')) {
+            toggleButton.innerHTML = '✏️ Editar Monto Pagado';
+          } else {
+            toggleButton.innerHTML = '❌ Cancelar Edición';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

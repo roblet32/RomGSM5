@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes | ROCKETGS</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <style>
+        .client-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            display: inline-block;
+            transition: all var(--transition);
+        }
+        .btn-edit { 
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; 
+        }
+        .btn-delete { 
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white; 
+        }
+        .btn-small:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .status-active { 
+            color: var(--success); 
+            font-weight: bold; 
+        }
+        .status-inactive { 
+            color: var(--danger); 
+            font-weight: bold; 
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+            flex-wrap: wrap;
+        }
+        .pagination span {
+            color: var(--text);
+            font-weight: 500;
+        }
+        .footer-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        .table-container {
+            background: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th,
+        .table-container td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .table-container th {
+            background: var(--background);
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .table-container tr:hover {
+            background: var(--background);
+        }
+        .client-name {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .client-contact {
+            color: var(--text);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="header-actions">
+                <h1>Gestión de Clientes</h1>
+                <a href="/recepcion/clientes/nuevo" class="btn">+ Nuevo Cliente</a>
+            </div>
+
+            <% if (typeof success !== 'undefined') { %>
+                <div class="success"><%= success %></div>
+            <% } %>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Teléfono</th>
+                            <th>Email</th>
+                            <th>Fecha Registro</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% clientes.forEach(cliente => { %>
+                            <tr>
+                                <td>
+                                    <div class="client-name"><%= cliente.nombre %></div>
+                                </td>
+                                <td>
+                                    <div class="client-contact"><%= cliente.telefono %></div>
+                                </td>
+                                <td>
+                                    <div class="client-contact"><%= cliente.email || 'N/A' %></div>
+                                </td>
+                                <td>
+                                    <div class="client-contact">
+                                        <%= new Date(cliente.fechaRegistro).toLocaleDateString('es-ES') %>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="<%= cliente.activo ? 'status-active' : 'status-inactive' %>">
+                                        <%= cliente.activo ? 'Activo' : 'Inactivo' %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="client-actions">
+                                        <a href="/recepcion/clientes/<%= cliente._id %>/editar" class="btn-small btn-edit">Editar</a>
+                                        <button onclick="eliminarCliente('<%= cliente._id %>', '<%= cliente.nombre %>')" class="btn-small btn-delete">Eliminar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            <% if (pagination.totalPages > 1) { %>
+                <div class="pagination">
+                    <% if (pagination.hasPrev) { %>
+                        <a href="?page=<%= pagination.page - 1 %>" class="btn">← Anterior</a>
+                    <% } %>
+                    
+                    <span>Página <%= pagination.page %> de <%= pagination.totalPages %></span>
+                    
+                    <% if (pagination.hasNext) { %>
+                        <a href="?page=<%= pagination.page + 1 %>" class="btn">Siguiente →</a>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <div class="footer-actions">
+                <button onclick="history.back()" class="btn">Volver</button>
+                <a href="/recepcion/dashboard" class="btn">Dashboard</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function eliminarCliente(clienteId, clienteNombre) {
+            if (confirm(`¿Está seguro de que desea eliminar al cliente "${clienteNombre}"?`)) {
+                fetch(`/recepcion/clientes/${clienteId}/eliminar`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error eliminando cliente');
+                });
+            }
+        }
+    </script>
+    <%- include('../partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof isEdit !== 'undefined' && isEdit ? 'Editar Cliente' : 'Nuevo Cliente' %> | ROCKETGS</title>
+    <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h1><%= typeof isEdit !== 'undefined' && isEdit ? 'Editar Cliente' : 'Nuevo Cliente' %></h1>
+
+            <% if (typeof error !== 'undefined') { %>
+                <div class="error"><%= error %></div>
+            <% } %>
+
+            <form action="<%= typeof isEdit !== 'undefined' && isEdit ? `/recepcion/clientes/${cliente._id}/editar` : '/recepcion/clientes/nuevo' %>" method="POST">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo *</label>
+                    <input type="text" id="nombre" name="nombre" value="<%= typeof isEdit !== 'undefined' && isEdit ? cliente.nombre : (typeof formData !== 'undefined' && formData.nombre ? formData.nombre : '') %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Teléfono *</label>
+                    <input type="tel" id="telefono" name="telefono" value="<%= typeof isEdit !== 'undefined' && isEdit ? cliente.telefono : (typeof formData !== 'undefined' && formData.telefono ? formData.telefono : '') %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="<%= typeof isEdit !== 'undefined' && isEdit ? cliente.email : (typeof formData !== 'undefined' && formData.email ? formData.email : '') %>">
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">
+                        <%= typeof isEdit !== 'undefined' && isEdit ? 'Actualizar Cliente' : 'Crear Cliente' %>
+                    </button>
+                    <button type="button" onclick="history.back()" class="btn">Cancelar</button>
+                </div>
+            </form>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button onclick="history.back()" class="btn">Volver</button>
+                <a href="/recepcion/clientes" class="btn">Lista de Clientes</a>
+                <a href="/recepcion/dashboard" class="btn">Dashboard</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Administrador | ROCKETGS</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <main>
+    <div class="dashboard-layout">
+      <aside class="sidebar container">
+        <h2>Menú</h2>
+        <ul>
+          <li><a href="/admin/register-user">Registrar Usuario</a></li>
+          <li><a href="/admin/users">Ver Usuarios</a></li>
+          <li><a href="/admin/inventario">Gestionar Inventario</a></li>
+          <li><a href="/logout">Cerrar sesión</a></li>
+        </ul>
+      </aside>
+      <section class="main-content container">
+        <h1>Bienvenido, <%= user.nombreDisplay %></h1>
+        <h2>Panel de Administración</h2>
+        
+        <!-- Tarjetas de estadísticas -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number"><%= totalOrdenes %></div>
+            <div class="stat-label">Total Órdenes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><%= totalClientes %></div>
+            <div class="stat-label">Total Clientes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><%= totalDispositivos %></div>
+            <div class="stat-label">Total Dispositivos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number">$<%= ingresosTotales.toFixed(2) %></div>
+            <div class="stat-label">Ingresos Totales</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><%= totalFinalizadas %></div>
+            <div class="stat-label">Órdenes Finalizadas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><%= totalPagadas %></div>
+            <div class="stat-label">Órdenes Pagadas</div>
+          </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="tables-container">
+          <div class="table-card">
+            <div class="table-title">Estadísticas Detalladas</div>
+            <table>
+              <tr>
+                <td><strong>Órdenes Pendientes de Pago:</strong></td>
+                <td><%= totalPendientesPago %></td>
+              </tr>
+              <tr>
+                <td><strong>Órdenes en Proceso:</strong></td>
+                <td><%= totalEnProceso %></td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="table-card">
+            <div class="table-title">Órdenes Finalizadas por Mes</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Mes</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% finalizadasPorMes.forEach(function(mes) { %>
+                  <tr>
+                    <td><%= mes._id %></td>
+                    <td><%= mes.total %></td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+      </section>
+    </div>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

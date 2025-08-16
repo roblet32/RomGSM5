@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis órdenes | ROCKETGS</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <style>
+    .order-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      display: inline-block;
+      transition: all var(--transition);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+    .btn-small:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    .status-pendiente { 
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white; 
+    }
+    .status-asignada { 
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white; 
+    }
+    .status-cotizacion_enviada { 
+      background: linear-gradient(135deg, var(--secondary), #8e44ad);
+      color: white; 
+    }
+    .status-aprobada { 
+      background: linear-gradient(135deg, var(--success), #2ecc71);
+      color: white; 
+    }
+    .status-en_proceso { 
+      background: linear-gradient(135deg, #e67e22, #d35400);
+      color: white; 
+    }
+    .status-finalizada { 
+      background: linear-gradient(135deg, var(--success), #2ecc71);
+      color: white; 
+    }
+    .status-cancelada { 
+      background: linear-gradient(135deg, var(--danger), #c0392b);
+      color: white; 
+    }
+    .header-section {
+      margin-bottom: 24px;
+    }
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--text);
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      border: 1px solid #e2e8f0;
+    }
+    .empty-state p {
+      font-size: 18px;
+      margin: 0;
+      color: var(--text);
+    }
+    .table-container {
+      background: #fff;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+    }
+    .table-container table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table-container th,
+    .table-container td {
+      padding: 16px;
+      text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .table-container th {
+      background: var(--background);
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    .table-container tr:hover {
+      background: var(--background);
+    }
+    .client-name {
+      font-weight: 600;
+      color: var(--primary-dark);
+    }
+    .device-info {
+      font-weight: 500;
+      color: var(--text);
+    }
+    .service-type {
+      color: var(--text);
+      font-weight: 500;
+    }
+    .footer-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="container">
+      <div class="header-section">
+        <h1>Mis Órdenes Asignadas</h1>
+      </div>
+
+      <% if (misOrdenes.length === 0) { %>
+        <div class="empty-state">
+          <p>No tienes órdenes asignadas actualmente.</p>
+        </div>
+      <% } else { %>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Dispositivo</th>
+                <th>Tipo Servicio</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% misOrdenes.forEach(function(o) { %>
+                <tr>
+                  <td>
+                    <div class="client-name">
+                      <%= o.dispositivo && o.dispositivo.cliente ? o.dispositivo.cliente.nombre : 'N/A' %>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="device-info">
+                      <%= o.dispositivo && o.dispositivo.descripcionCompleta ? o.dispositivo.descripcionCompleta : 'N/A' %>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="service-type">
+                      <%= o.tipoServicio ? o.tipoServicio : 'N/A' %>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="status-badge status-<%= o.estado ? o.estado : 'pendiente' %>">
+                      <%= o.estado ? o.estado.replace('_', ' ') : 'N/A' %>
+                    </span>
+                  </td>
+                  <td>
+                    <div class="order-actions">
+                      <a href="/tecnico/ordenes/<%= o._id %>" class="btn-small">Ver Detalle</a>
+                    </div>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+
+      <div class="footer-actions">
+        <button onclick="history.back()" class="btn">Volver</button>
+        <a href="/tecnico/dashboard" class="btn">Dashboard</a>
+      </div>
+    </div>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

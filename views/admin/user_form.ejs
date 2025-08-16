@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= isEdit ? 'Editar Usuario' : 'Nuevo Usuario' %> | ROCKETGS</title>
+    <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h1><%= isEdit ? 'Editar Usuario' : 'Nuevo Usuario' %></h1>
+
+            <% if (typeof error !== 'undefined') { %>
+                <div class="error"><%= error %></div>
+            <% } %>
+
+            <form action="<%= isEdit ? `/admin/users/${user._id}/editar` : '/admin/register-user' %>" method="POST">
+                <div class="form-group">
+                    <label for="username">Nombre de Usuario *</label>
+                    <input type="text" id="username" name="username" value="<%= isEdit ? user.username : (formData?.username || '') %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo *</label>
+                    <input type="text" id="nombre" name="nombre" value="<%= isEdit ? user.nombre : (formData?.nombre || '') %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" value="<%= isEdit ? user.email : (formData?.email || '') %>">
+                </div>
+
+                <div class="form-group">
+                    <label for="role">Rol *</label>
+                    <select id="role" name="role" required>
+                        <option value="">Seleccionar rol</option>
+                        <option value="admin" <%= (isEdit ? user.role : (formData?.role || '')) === 'admin' ? 'selected' : '' %>>Administrador</option>
+                        <option value="tecnico" <%= (isEdit ? user.role : (formData?.role || '')) === 'tecnico' ? 'selected' : '' %>>Técnico</option>
+                        <option value="recepcion" <%= (isEdit ? user.role : (formData?.role || '')) === 'recepcion' ? 'selected' : '' %>>Recepción</option>
+                    </select>
+                </div>
+
+                <% if (isEdit) { %>
+                    <div class="form-group">
+                        <label for="activo">Estado</label>
+                        <select id="activo" name="activo">
+                            <option value="true" <%= user.activo ? 'selected' : '' %>>Activo</option>
+                            <option value="false" <%= !user.activo ? 'selected' : '' %>>Inactivo</option>
+                        </select>
+                    </div>
+                <% } else { %>
+                    <div class="form-group">
+                        <label for="password">Contraseña *</label>
+                        <input type="password" id="password" name="password" required>
+                        <small>Mínimo 8 caracteres, incluir mayúscula, minúscula y número</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirmar Contraseña *</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    </div>
+                <% } %>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">
+                        <%= isEdit ? 'Actualizar Usuario' : 'Crear Usuario' %>
+                    </button>
+                    <button type="button" onclick="history.back()" class="btn">Cancelar</button>
+                </div>
+            </form>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button onclick="history.back()" class="btn">Volver</button>
+                <a href="/admin/users" class="btn">Lista de Usuarios</a>
+                <a href="/admin/dashboard" class="btn">Dashboard</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Validación de contraseñas
+        document.addEventListener('DOMContentLoaded', function() {
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirmPassword');
+            
+            if (password && confirmPassword) {
+                function validatePassword() {
+                    if (password.value !== confirmPassword.value) {
+                        confirmPassword.setCustomValidity('Las contraseñas no coinciden');
+                    } else {
+                        confirmPassword.setCustomValidity('');
+                    }
+                }
+                
+                password.addEventListener('change', validatePassword);
+                confirmPassword.addEventListener('keyup', validatePassword);
+            }
+        });
+    </script>
+</body>
+</html> 

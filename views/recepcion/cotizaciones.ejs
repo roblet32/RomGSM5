@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Cotizaciones | ROCKETGS</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <style>
+        .quote-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-small {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 4px;
+        }
+        .btn-approve { background-color: #28a745; color: white; }
+        .btn-reject { background-color: #dc3545; color: white; }
+        .btn-cancel { background-color: #ffc107; color: black; }
+        .btn-report { background-color: #17a2b8; color: white; }
+        .status-badge {
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-pendiente { background-color: #ffc107; color: black; }
+        .status-aprobada { background-color: #28a745; color: white; }
+        .status-rechazada { background-color: #dc3545; color: white; }
+        .status-cancelada { background-color: #6c757d; color: white; }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h1>Gestión de Cotizaciones</h1>
+            
+            <% if (typeof success !== 'undefined') { %>
+                <div class="success"><%= success %></div>
+            <% } %>
+            <% if (typeof error !== 'undefined') { %>
+                <div class="error"><%= error %></div>
+            <% } %>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Dispositivo</th>
+                            <th>Mano de Obra</th>
+                            <th>Materiales</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% cotizaciones.forEach(c => { %>
+                            <tr>
+                                <td><strong><%= c.ordenServicio.dispositivo.cliente?.nombre %></strong></td>
+                                <td>
+                                    <strong><%= c.ordenServicio.dispositivo.tipo %> - <%= c.ordenServicio.dispositivo.marca %> <%= c.ordenServicio.dispositivo.modelo %></strong>
+                                    <% if (c.ordenServicio.dispositivo.numeroSerie) { %>
+                                        <br><small>Serie: <%= c.ordenServicio.dispositivo.numeroSerie %></small>
+                                    <% } %>
+                                </td>
+                                <td>$<%= c.manoObra ? c.manoObra.toFixed(2) : '0.00' %></td>
+                                <td>$<%= c.itemsInventario && c.itemsInventario.length > 0 ? c.itemsInventario.reduce((sum, item) => sum + (item.precio * item.cantidad), 0).toFixed(2) : '0.00' %></td>
+                                <td><strong>$<%= ((c.manoObra || 0) + (c.itemsInventario && c.itemsInventario.length > 0 ? c.itemsInventario.reduce((sum, item) => sum + (item.precio * item.cantidad), 0) : 0)).toFixed(2) %></strong></td>
+                                <td>
+                                    <span class="status-badge status-<%= c.estado %>">
+                                        <%= c.estado %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="quote-actions">
+                                        <% if (c.estado === 'pendiente') { %>
+                                            <form action="/recepcion/cotizaciones/<%= c._id %>/aprobar" method="POST" style="display:inline;">
+                                                <button type="submit" class="btn btn-small btn-approve">Aprobar</button>
+                                            </form>
+                                            <form action="/recepcion/cotizaciones/<%= c._id %>/rechazar" method="POST" style="display:inline;">
+                                                <button type="submit" class="btn btn-small btn-reject">Rechazar</button>
+                                            </form>
+                                        <% } else if (c.estado === 'aprobada') { %>
+                                            <form action="/recepcion/cotizaciones/<%= c._id %>/cancelar" method="POST" style="display:inline;">
+                                                <button type="submit" class="btn btn-small btn-cancel">Cancelar</button>
+                                            </form>
+                                        <% } %>
+                                        
+                                        <% if (c.estado === 'aprobada' || c.estado === 'rechazada' || c.estado === 'cancelada') { %>
+                                            <a href="/recepcion/reporte/<%= c.ordenServicio._id %>" class="btn btn-small btn-report">📄 Reporte</a>
+                                        <% } %>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            <% if (pagination.totalPages > 1) { %>
+                <div class="pagination">
+                    <% if (pagination.hasPrev) { %>
+                        <a href="?page=<%= pagination.page - 1 %>" class="btn">← Anterior</a>
+                    <% } %>
+                    
+                    <span>Página <%= pagination.page %> de <%= pagination.totalPages %></span>
+                    
+                    <% if (pagination.hasNext) { %>
+                        <a href="?page=<%= pagination.page + 1 %>" class="btn">Siguiente →</a>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button onclick="history.back()" class="btn">Volver</button>
+                <a href="/recepcion/dashboard" class="btn">Dashboard</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

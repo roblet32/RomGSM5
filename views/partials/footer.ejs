@@ -1,0 +1,299 @@
+<footer class="footer">
+  <div class="footer-content">
+    <div class="footer-row">
+      <div class="footer-block">
+        <div class="footer-copyright">
+          &copy; <%= new Date().getFullYear() %> <strong>RocketGSM</strong>
+          <span class="footer-subtitle">Todos los derechos reservados</span>
+        </div>
+      </div>
+      <div class="footer-block">
+        <div class="footer-contact">
+          <span class="footer-label">📧 Contacto:</span>
+          <a href="mailto:jultym2@gmail.com" class="footer-link">jultym2@gmail.com</a>
+        </div>
+      </div>
+      <div class="footer-block">
+        <div class="footer-social">
+          <span class="footer-label">🌐 Soporte:</span>
+          <div class="social-links">
+            <a href="https://x.com/jultym87651" target="_blank" class="footer-link social-link">
+              <span class="social-icon">𝕏</span>
+              <span class="social-text">Twitter</span>
+            </a>
+            <a href="https://github.com/roblet32" target="_blank" class="footer-link social-link">
+              <span class="social-icon">📦</span>
+              <span class="social-text">Github</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    width: 100%;
+    background: linear-gradient(135deg, var(--primary-dark), var(--secondary-dark));
+    color: #fff;
+    text-align: center;
+    padding: 24px 16px;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    box-sizing: border-box;
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    font-size: 14px;
+  }
+
+  .footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .footer-block {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .footer-copyright {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .footer-subtitle {
+    font-size: 12px;
+    opacity: 0.8;
+    font-weight: 300;
+  }
+
+  .footer-contact {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .footer-social {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .footer-label {
+    font-weight: 600;
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  .footer-link {
+    color: #fff;
+    text-decoration: none;
+    transition: all var(--transition);
+    padding: 4px 8px;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+  }
+
+  .footer-link:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+
+  .social-links {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .social-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--border-radius);
+    transition: all var(--transition);
+  }
+
+  .social-link:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: rgba(255,255,255,0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .social-icon {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .social-text {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .footer-row {
+      justify-content: center;
+      gap: 32px;
+    }
+    
+    .footer-block {
+      flex: none;
+      min-width: 180px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .footer {
+      padding: 16px 12px;
+    }
+
+    .footer-row {
+      flex-direction: column;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .footer-block {
+      flex: none;
+      min-width: auto;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .footer-copyright,
+    .footer-contact,
+    .footer-social {
+      align-items: center;
+    }
+
+    .social-links {
+      justify-content: center;
+    }
+
+    .footer-content {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .footer {
+      padding: 12px 8px;
+    }
+
+    .footer-content {
+      font-size: 12px;
+    }
+
+    .footer-row {
+      gap: 12px;
+    }
+
+    .social-links {
+      gap: 8px;
+    }
+
+    .social-link {
+      padding: 4px 8px;
+    }
+
+    .social-text {
+      font-size: 12px;
+    }
+
+    .footer-label {
+      font-size: 12px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    .footer {
+      padding: 8px 6px;
+    }
+
+    .footer-content {
+      font-size: 11px;
+    }
+
+    .footer-row {
+      gap: 8px;
+    }
+
+    .social-links {
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .social-link {
+      justify-content: center;
+    }
+  }
+
+  /* Asegurar que el contenido principal no se superponga con el footer */
+  main {
+    margin-bottom: 180px;
+    padding-bottom: 40px;
+  }
+
+  .container {
+    padding-bottom: 40px;
+  }
+
+  @media (max-width: 1024px) {
+    main {
+      margin-bottom: 200px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    main {
+      margin-bottom: 220px;
+    }
+    
+    .container {
+      padding-bottom: 60px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    main {
+      margin-bottom: 240px;
+    }
+    
+    .container {
+      padding-bottom: 80px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    main {
+      margin-bottom: 260px;
+    }
+    
+    .container {
+      padding-bottom: 100px;
+    }
+  }
+</style>

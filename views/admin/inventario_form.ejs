@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof isEdit !== 'undefined' && isEdit ? 'Editar' : 'Nuevo' %> ítem - Inventario | ROCKETGS</title>
+  <link rel="stylesheet" href="/css/base.css">
+</head>
+<body>
+  <main>
+    <div class="container">
+      <h1><%= typeof isEdit !== 'undefined' && isEdit ? 'Editar' : 'Nuevo' %> ítem de inventario</h1>
+      
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="error"><%= error %></div>
+      <% } %>
+      
+      <% if (typeof success !== 'undefined' && success) { %>
+        <div class="success"><%= success %></div>
+      <% } %>
+
+      <form action="<%= typeof isEdit !== 'undefined' && isEdit ? `/admin/inventario/${item._id}/editar` : '/admin/inventario/nuevo' %>" method="POST">
+        <div class="form-group">
+          <label for="nombre">Nombre del ítem *</label>
+          <input 
+            type="text" 
+            name="nombre" 
+            id="nombre" 
+            value="<%= typeof formData !== 'undefined' && formData.nombre ? formData.nombre : (typeof item !== 'undefined' && item.nombre ? item.nombre : '') %>"
+            required
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <textarea name="descripcion" id="descripcion"><%= typeof formData !== 'undefined' && formData.descripcion ? formData.descripcion : (typeof item !== 'undefined' && item.descripcion ? item.descripcion : '') %></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="categoria">Categoría *</label>
+          <select name="categoria" id="categoria" required>
+            <option value="">Seleccionar categoría</option>
+            <option value="repuestos" <%= (typeof formData !== 'undefined' && formData.categoria === 'repuestos') || (typeof item !== 'undefined' && item.categoria === 'repuestos') ? 'selected' : '' %>>Repuestos</option>
+            <option value="herramientas" <%= (typeof formData !== 'undefined' && formData.categoria === 'herramientas') || (typeof item !== 'undefined' && item.categoria === 'herramientas') ? 'selected' : '' %>>Herramientas</option>
+            <option value="accesorios" <%= (typeof formData !== 'undefined' && formData.categoria === 'accesorios') || (typeof item !== 'undefined' && item.categoria === 'accesorios') ? 'selected' : '' %>>Accesorios</option>
+            <option value="otros" <%= (typeof formData !== 'undefined' && formData.categoria === 'otros') || (typeof item !== 'undefined' && item.categoria === 'otros') ? 'selected' : '' %>>Otros</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="precio">Precio (MXN) *</label>
+          <input 
+            type="number" 
+            name="precio" 
+            id="precio" 
+            step="0.01" 
+            min="0" 
+            value="<%= typeof formData !== 'undefined' && formData.precio ? formData.precio : (typeof item !== 'undefined' && item.precio ? item.precio : '') %>"
+            required
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="stock">Stock actual *</label>
+          <input 
+            type="number" 
+            name="stock" 
+            id="stock" 
+            min="0" 
+            value="<%= typeof formData !== 'undefined' && formData.stock ? formData.stock : (typeof item !== 'undefined' && item.stock ? item.stock : '') %>"
+            required
+          >
+        </div>
+        
+        <div class="form-group">
+          <label for="stockMinimo">Stock mínimo</label>
+          <input 
+            type="number" 
+            name="stockMinimo" 
+            id="stockMinimo" 
+            min="0" 
+            value="<%= typeof formData !== 'undefined' && formData.stockMinimo ? formData.stockMinimo : (typeof item !== 'undefined' && item.stockMinimo ? item.stockMinimo : '1') %>"
+          >
+        </div>
+        
+        <button type="submit">
+          <%= typeof isEdit !== 'undefined' && isEdit ? 'Actualizar' : 'Guardar' %> ítem
+        </button>
+      </form>
+      
+      <div style="margin-top: 18px; display: flex; gap: 10px;">
+        <button type="button" onclick="history.back()">Volver</button>
+        <a href="/admin/inventario" class="home-button">Ver Inventario</a>
+        <a href="/dashboard" class="home-button">Ir al Dashboard</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

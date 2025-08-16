@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof isEdit !== 'undefined' && isEdit ? 'Editar Dispositivo' : 'Nuevo Dispositivo' %> | ROCKETGS</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <style>
+        .current-photos {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        .photo-item {
+            position: relative;
+            display: inline-block;
+        }
+        .photo-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+        }
+        .remove-photo {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <h1><%= typeof isEdit !== 'undefined' && isEdit ? 'Editar Dispositivo' : 'Nuevo Dispositivo' %></h1>
+
+            <% if (typeof error !== 'undefined') { %>
+                <div class="error"><%= error %></div>
+            <% } %>
+
+            <form action="<%= typeof isEdit !== 'undefined' && isEdit ? `/recepcion/dispositivos/${dispositivo._id}/editar` : '/recepcion/dispositivos/nuevo' %>" method="POST" enctype="multipart/form-data">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cliente">Cliente *</label>
+                        <select id="cliente" name="cliente" required>
+                            <option value="">Seleccionar cliente</option>
+                            <% clientes.forEach(cliente => { %>
+                                <option value="<%= cliente._id %>" 
+                                    <%= (typeof isEdit !== 'undefined' && isEdit ? dispositivo.cliente._id.toString() : (typeof formData !== 'undefined' && formData.cliente ? formData.cliente : '')) === cliente._id.toString() ? 'selected' : '' %>>
+                                    <%= cliente.nombre %> - <%= cliente.telefono %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Dispositivo *</label>
+                        <select id="tipo" name="tipo" required>
+                            <option value="">Seleccionar tipo</option>
+                            <option value="computadora" <%= (typeof isEdit !== 'undefined' && isEdit ? dispositivo.tipo : (typeof formData !== 'undefined' && formData.tipo ? formData.tipo : '')) === 'computadora' ? 'selected' : '' %>>Computadora</option>
+                            <option value="laptop" <%= (typeof isEdit !== 'undefined' && isEdit ? dispositivo.tipo : (typeof formData !== 'undefined' && formData.tipo ? formData.tipo : '')) === 'laptop' ? 'selected' : '' %>>Laptop</option>
+                            <option value="impresora" <%= (typeof isEdit !== 'undefined' && isEdit ? dispositivo.tipo : (typeof formData !== 'undefined' && formData.tipo ? formData.tipo : '')) === 'impresora' ? 'selected' : '' %>>Impresora</option>
+                            <option value="tablet" <%= (typeof isEdit !== 'undefined' && isEdit ? dispositivo.tipo : (typeof formData !== 'undefined' && formData.tipo ? formData.tipo : '')) === 'tablet' ? 'selected' : '' %>>Tablet</option>
+                            <option value="smartphone" <%= (typeof isEdit !== 'undefined' && isEdit ? dispositivo.tipo : (typeof formData !== 'undefined' && formData.tipo ? formData.tipo : '')) === 'smartphone' ? 'selected' : '' %>>Smartphone</option>
+                            <option value="monitor" <%= (typeof isEdit !== 'undefined' && isEdit ? dispositivo.tipo : (typeof formData !== 'undefined' && formData.tipo ? formData.tipo : '')) === 'monitor' ? 'selected' : '' %>>Monitor</option>
+                            <option value="otro" <%= (typeof isEdit !== 'undefined' && isEdit ? dispositivo.tipo : (typeof formData !== 'undefined' && formData.tipo ? formData.tipo : '')) === 'otro' ? 'selected' : '' %>>Otro</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="marca">Marca *</label>
+                        <input type="text" id="marca" name="marca" value="<%= typeof isEdit !== 'undefined' && isEdit ? dispositivo.marca : (typeof formData !== 'undefined' && formData.marca ? formData.marca : '') %>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modelo">Modelo *</label>
+                        <input type="text" id="modelo" name="modelo" value="<%= typeof isEdit !== 'undefined' && isEdit ? dispositivo.modelo : (typeof formData !== 'undefined' && formData.modelo ? formData.modelo : '') %>" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="numeroSerie">Número de Serie</label>
+                    <input type="text" id="numeroSerie" name="numeroSerie" value="<%= typeof isEdit !== 'undefined' && isEdit ? dispositivo.numeroSerie : (typeof formData !== 'undefined' && formData.numeroSerie ? formData.numeroSerie : '') %>">
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcionProblema">Descripción del Problema *</label>
+                    <textarea id="descripcionProblema" name="descripcionProblema" rows="4" required><%= typeof isEdit !== 'undefined' && isEdit ? dispositivo.descripcionProblema : (typeof formData !== 'undefined' && formData.descripcionProblema ? formData.descripcionProblema : '') %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="accesoriosIncluidos">Accesorios Incluidos</label>
+                    <textarea id="accesoriosIncluidos" name="accesoriosIncluidos" rows="3"><%= typeof isEdit !== 'undefined' && isEdit ? dispositivo.accesoriosIncluidos : (typeof formData !== 'undefined' && formData.accesoriosIncluidos ? formData.accesoriosIncluidos : '') %></textarea>
+                </div>
+
+                <% if (typeof isEdit !== 'undefined' && isEdit && dispositivo.fotos && dispositivo.fotos.length > 0) { %>
+                    <div class="form-group">
+                        <label>Fotos Actuales</label>
+                        <div class="current-photos">
+                            <% dispositivo.fotos.forEach(foto => { %>
+                                <div class="photo-item">
+                                    <img src="/uploads/<%= foto %>" alt="Foto dispositivo">
+                                    <button type="button" class="remove-photo" onclick="eliminarFoto('<%= foto %>')" title="Eliminar foto">×</button>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                <% } %>
+
+                <div class="form-group">
+                    <label for="fotos">Fotos del Dispositivo</label>
+                    <input type="file" id="fotos" name="fotos" multiple accept="image/*">
+                    <small>Puede seleccionar múltiples archivos. Formatos: JPG, PNG, GIF. Máximo 10MB por archivo.</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn">
+                        <%= typeof isEdit !== 'undefined' && isEdit ? 'Actualizar Dispositivo' : 'Crear Dispositivo' %>
+                    </button>
+                    <button type="button" onclick="history.back()" class="btn">Cancelar</button>
+                </div>
+            </form>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button onclick="history.back()" class="btn">Volver</button>
+                <a href="/recepcion/dispositivos" class="btn">Lista de Dispositivos</a>
+                <a href="/recepcion/dashboard" class="btn">Dashboard</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function eliminarFoto(foto) {
+            if (confirm('¿Está seguro de que desea eliminar esta foto?')) {
+                fetch(`/recepcion/dispositivos/<%= typeof isEdit !== 'undefined' && isEdit ? dispositivo._id : '' %>/eliminar-foto`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ foto: foto })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        location.reload();
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error eliminando foto');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

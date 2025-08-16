@@ -1,0 +1,159 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard Recepción | ROCKETGS</title>
+  <link rel="stylesheet" href="/css/base.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+<body>
+  <main>
+    <div class="dashboard-layout">
+      <aside class="sidebar container">
+        <h2>Menú</h2>
+        <ul>
+          <li><a href="/recepcion/clientes">Gestionar Clientes</a></li>
+          <li><a href="/recepcion/dispositivos">Gestionar Dispositivos</a></li>
+          <li><a href="/recepcion/cotizaciones">Ver Cotizaciones</a></li>
+          <li><a href="/recepcion/ordenes">Gestionar Ordenes</a></li>
+          <li><a href="/logout">Cerrar sesión</a></li>
+        </ul>
+      </aside>
+      <section class="main-content container">
+        <h1>Bienvenido, <%= user.nombreDisplay %></h1>
+
+        <!-- Tarjetas de estadísticas -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-number"><%= stats.totalOrdenes %></div>
+            <div class="stat-label">Órdenes Activas</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><%= stats.totalClientes %></div>
+            <div class="stat-label">Clientes Activos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><%= stats.totalDispositivos %></div>
+            <div class="stat-label">Dispositivos Activos</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><%= stats.ordenesHoy %></div>
+            <div class="stat-label">Órdenes Hoy</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><%= stats.ordenesSemana %></div>
+            <div class="stat-label">Órdenes Esta Semana</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number"><%= stats.clientesSemana %></div>
+            <div class="stat-label">Clientes Esta Semana</div>
+          </div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="tables-container">
+          <div class="table-card">
+            <div class="table-title">Estadísticas de Estados</div>
+            <table>
+              <tr>
+                <td><strong>Órdenes Pagadas:</strong></td>
+                <td><%= stats.totalPagadas %></td>
+              </tr>
+              <tr>
+                <td><strong>Órdenes Pendientes:</strong></td>
+                <td><%= stats.totalPendientesPago %></td>
+              </tr>
+              <tr>
+                <td><strong>Órdenes en Proceso:</strong></td>
+                <td><%= stats.totalEnProceso %></td>
+              </tr>
+            </table>
+          </div>
+          
+          <div class="table-card">
+            <div class="table-title">Actividad de Hoy</div>
+            <table>
+              <tr>
+                <td><strong>Órdenes Creadas:</strong></td>
+                <td><%= stats.ordenesHoy %></td>
+              </tr>
+              <tr>
+                <td><strong>Clientes Registrados:</strong></td>
+                <td><%= stats.clientesHoy %></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tablas de información -->
+        <div class="tables-container">
+          <!-- Órdenes recientes -->
+          <div class="table-card">
+            <div class="table-title">Órdenes de Servicio Recientes</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Dispositivo</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (ordenesRecientes.length === 0) { %>
+                  <tr><td colspan="4">No hay órdenes recientes.</td></tr>
+                <% } else { %>
+                  <% ordenesRecientes.forEach(orden => { %>
+                    <tr>
+                      <td><%= orden.dispositivo.cliente.nombre %></td>
+                      <td><%= orden.dispositivo.descripcionCompleta %></td>
+                      <td><%= orden.estado %></td>
+                      <td><%= orden.fechaCreacion.toLocaleString() %></td>
+                    </tr>
+                  <% }) %>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Cotizaciones pendientes -->
+          <div class="table-card">
+            <div class="table-title">Cotizaciones Pendientes</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Cliente</th>
+                  <th>Dispositivo</th>
+                  <th>Fecha</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (cotizacionesPendientes.length === 0) { %>
+                  <tr><td colspan="4">No hay cotizaciones pendientes.</td></tr>
+                <% } else { %>
+                  <% cotizacionesPendientes.forEach(cot => { %>
+                    <tr>
+                      <td><%= cot.ordenServicio.dispositivo.cliente.nombre %></td>
+                      <td><%= cot.ordenServicio.dispositivo.descripcionCompleta %></td>
+                      <td><%= cot.fechaCreacion.toLocaleString() %></td>
+                      <td>
+                        <form action="/recepcion/cotizaciones/<%= cot._id %>/aprobar" method="POST" style="display:inline;">
+                          <button type="submit">Aprobar</button>
+                        </form>
+                        <form action="/recepcion/cotizaciones/<%= cot._id %>/rechazar" method="POST" style="display:inline;">
+                          <button type="submit">Rechazar</button>
+                        </form>
+                      </td>
+                    </tr>
+                  <% }) %>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <%- include('../partials/footer') %>
+</body>
+</html>

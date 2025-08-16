@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Órdenes de Servicio | ROCKETGS</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <style>
+        .order-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: var(--border-radius);
+            text-decoration: none;
+            display: inline-block;
+            transition: all var(--transition);
+        }
+        .btn-view { 
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white; 
+        }
+        .btn-edit { 
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white; 
+        }
+        .btn-delete { 
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white; 
+        }
+        .btn-report { 
+            background: linear-gradient(135deg, var(--success), #2ecc71);
+            color: white; 
+        }
+        .btn-small:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .status-pendiente { 
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white; 
+        }
+        .status-asignada { 
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white; 
+        }
+        .status-cotizacion_enviada { 
+            background: linear-gradient(135deg, var(--secondary), #8e44ad);
+            color: white; 
+        }
+        .status-aprobada { 
+            background: linear-gradient(135deg, var(--success), #2ecc71);
+            color: white; 
+        }
+        .status-en_proceso { 
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            color: white; 
+        }
+        .status-finalizada { 
+            background: linear-gradient(135deg, var(--success), #2ecc71);
+            color: white; 
+        }
+        .status-cancelada { 
+            background: linear-gradient(135deg, var(--danger), #c0392b);
+            color: white; 
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            margin: 24px 0;
+            flex-wrap: wrap;
+        }
+        .pagination span {
+            color: var(--text);
+            font-weight: 500;
+        }
+        .footer-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+        .table-container {
+            background: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th,
+        .table-container td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .table-container th {
+            background: var(--background);
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .table-container tr:hover {
+            background: var(--background);
+        }
+        .client-name {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .device-info {
+            font-weight: 500;
+            color: var(--text);
+        }
+        .device-serial {
+            color: var(--text);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+        .service-type {
+            color: var(--text);
+            font-weight: 500;
+        }
+        .technician {
+            color: var(--text);
+            font-size: 14px;
+        }
+        .order-date {
+            color: var(--text);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="header-actions">
+                <h1>Gestión de Órdenes de Servicio</h1>
+                <a href="/recepcion/ordenes/nueva" class="btn">+ Nueva Orden</a>
+            </div>
+
+            <% if (typeof success !== 'undefined') { %>
+                <div class="success"><%= success %></div>
+            <% } %>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Dispositivo</th>
+                            <th>Servicio</th>
+                            <th>Estado</th>
+                            <th>Técnico Asignado</th>
+                            <th>Fecha</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% ordenes.forEach(orden => { %>
+                            <tr>
+                                <td>
+                                    <div class="client-name"><%= orden.dispositivo.cliente?.nombre %></div>
+                                </td>
+                                <td>
+                                    <div class="device-info">
+                                        <%= orden.dispositivo.tipo %> - <%= orden.dispositivo.marca %> <%= orden.dispositivo.modelo %>
+                                    </div>
+                                    <% if (orden.dispositivo.numeroSerie) { %>
+                                        <div class="device-serial">Serie: <%= orden.dispositivo.numeroSerie %></div>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <div class="service-type"><%= orden.tipoServicio %></div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-<%= orden.estado %>">
+                                        <%= orden.estado.replace('_', ' ') %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="technician">
+                                        <%= orden.tecnicoAsignado ? orden.tecnicoAsignado.nombre : 'No asignado' %>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="order-date">
+                                        <%= new Date(orden.fechaCreacion).toLocaleDateString('es-ES') %>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="order-actions">
+                                        <a href="/recepcion/ordenes/<%= orden._id %>" class="btn-small btn-view">Ver Detalle</a>
+                                        <a href="/recepcion/ordenes/<%= orden._id %>/editar" class="btn-small btn-edit">Editar</a>
+                                        <form action="/recepcion/ordenes/<%= orden._id %>/eliminar" method="POST" style="display:inline;" onsubmit="return confirm('¿Seguro que deseas eliminar esta orden? Esta acción no se puede deshacer y eliminará la cotización asociada.');">
+                                            <button type="submit" class="btn-small btn-delete">Eliminar</button>
+                                        </form>
+                                        <% if (orden.estado === 'finalizada') { %>
+                                            <a href="/recepcion/reporte/<%= orden._id %>" class="btn-small btn-report">📄 Reporte</a>
+                                        <% } %>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Paginación -->
+            <% if (pagination.totalPages > 1) { %>
+                <div class="pagination">
+                    <% if (pagination.hasPrev) { %>
+                        <a href="?page=<%= pagination.page - 1 %>" class="btn">← Anterior</a>
+                    <% } %>
+                    
+                    <span>Página <%= pagination.page %> de <%= pagination.totalPages %></span>
+                    
+                    <% if (pagination.hasNext) { %>
+                        <a href="?page=<%= pagination.page + 1 %>" class="btn">Siguiente →</a>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <div class="footer-actions">
+                <button onclick="history.back()" class="btn">Volver</button>
+                <a href="/recepcion/dashboard" class="btn">Dashboard</a>
+            </div>
+        </div>
+    </main>
+    <%- include('../partials/footer') %>
+</body>
+</html>

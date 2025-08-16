@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte Final - Orden #<%= orden._id.toString().slice(-6) %> | ROCKETGS</title>
+    <link rel="stylesheet" href="/css/base.css">
+    <style>
+        .report-header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .report-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .report-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .info-section h3 {
+            color: #007bff;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        .info-item {
+            margin-bottom: 8px;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .info-value {
+            color: #333;
+        }
+        .quote-details {
+            margin: 30px 0;
+        }
+        .quote-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .quote-table th,
+        .quote-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        .quote-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .quote-table .total-row {
+            background-color: #e9ecef;
+            font-weight: bold;
+        }
+        .totals-section {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .total-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .total-final {
+            font-size: 20px;
+            font-weight: bold;
+            color: #007bff;
+            border-top: 2px solid #007bff;
+            padding-top: 10px;
+        }
+        .report-footer {
+            margin-top: 40px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .print-actions {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .btn-print {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+        @media print {
+            .print-actions, .navigation-buttons {
+                display: none;
+            }
+            body {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="print-actions">
+                <button onclick="window.print()" class="btn-print">🖨️ Imprimir Reporte</button>
+                <a href="/recepcion/reporte/<%= orden._id %>/pdf" class="btn-print" target="_blank">⬇️ Descargar PDF</a>
+            </div>
+
+            <div class="report-header">
+                <h1>ROCKETGS</h1>
+                <h2>Reporte Final de Servicio</h2>
+                <p>Orden #<%= orden._id.toString().slice(-6) %> | <%= fechaReporte.toLocaleDateString('es-ES') %></p>
+            </div>
+
+            <div class="report-info">
+                <div class="info-section">
+                    <h3>Información del Cliente</h3>
+                    <div class="info-item">
+                        <span class="info-label">Nombre:</span>
+                        <span class="info-value"><%= orden.dispositivo.cliente.nombre %></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Teléfono:</span>
+                        <span class="info-value"><%= orden.dispositivo.cliente.telefono %></span>
+                    </div>
+                    <% if (orden.dispositivo.cliente.email) { %>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value"><%= orden.dispositivo.cliente.email %></span>
+                        </div>
+                    <% } %>
+                </div>
+
+                <div class="info-section">
+                    <h3>Información del Dispositivo</h3>
+                    <div class="info-item">
+                        <span class="info-label">Tipo:</span>
+                        <span class="info-value"><%= orden.dispositivo.tipo %></span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Marca/Modelo:</span>
+                        <span class="info-value"><%= orden.dispositivo.marca %> <%= orden.dispositivo.modelo %></span>
+                    </div>
+                    <% if (orden.dispositivo.numeroSerie) { %>
+                        <div class="info-item">
+                            <span class="info-label">Número de Serie:</span>
+                            <span class="info-value"><%= orden.dispositivo.numeroSerie %></span>
+                        </div>
+                    <% } %>
+                    <div class="info-item">
+                        <span class="info-label">Problema Reportado:</span>
+                        <span class="info-value"><%= orden.dispositivo.descripcionProblema %></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>Detalles del Servicio</h3>
+                <div class="info-item">
+                    <span class="info-label">Tipo de Servicio:</span>
+                    <span class="info-value"><%= orden.tipoServicio %></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Prioridad:</span>
+                    <span class="info-value"><%= orden.prioridad %></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Diagnóstico Inicial:</span>
+                    <span class="info-value"><%= orden.diagnosticoInicial %></span>
+                </div>
+                <% if (orden.observaciones) { %>
+                    <div class="info-item">
+                        <span class="info-label">Observaciones:</span>
+                        <span class="info-value"><%= orden.observaciones %></span>
+                    </div>
+                <% } %>
+                <div class="info-item">
+                    <span class="info-label">Técnico Asignado:</span>
+                    <span class="info-value"><%= orden.tecnicoAsignado ? orden.tecnicoAsignado.nombre : 'No asignado' %></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Fecha de Creación:</span>
+                    <span class="info-value"><%= new Date(orden.fechaCreacion).toLocaleDateString('es-ES') %></span>
+                </div>
+                <% if (orden.fechaInicio) { %>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Inicio:</span>
+                        <span class="info-value"><%= new Date(orden.fechaInicio).toLocaleDateString('es-ES') %></span>
+                    </div>
+                <% } %>
+                <% if (orden.fechaFinalizacion) { %>
+                    <div class="info-item">
+                        <span class="info-label">Fecha de Finalización:</span>
+                        <span class="info-value"><%= new Date(orden.fechaFinalizacion).toLocaleDateString('es-ES') %></span>
+                    </div>
+                <% } %>
+            </div>
+
+            <% if (cotizacion) { %>
+                <div class="quote-details">
+                    <h3>Cotización Aprobada</h3>
+                    
+                    <% if (cotizacion.subtotalManoObra > 0) { %>
+                        <div class="totals-section">
+                            <div class="total-item">
+                                <span>Mano de Obra:</span>
+                                <span>$<%= cotizacion.subtotalManoObra.toFixed(2) %></span>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <% if (cotizacion.itemsInventario && cotizacion.itemsInventario.length > 0) { %>
+                        <h4>Materiales Utilizados</h4>
+                        <table class="quote-table">
+                            <thead>
+                                <tr>
+                                    <th>Material</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio Unitario</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% cotizacion.itemsInventario.forEach(item => { %>
+                                    <tr>
+                                        <td><%= item.inventarioItem.nombre %></td>
+                                        <td><%= item.cantidad %></td>
+                                        <td>
+                                            $<%= typeof item.precioUnitario === 'number' ? item.precioUnitario.toFixed(2) : '0.00' %>
+                                        </td>
+                                        <td>
+                                            $<%= typeof item.subtotal === 'number' ? item.subtotal.toFixed(2) : '0.00' %>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    <% } %>
+
+                    <div class="totals-section">
+                        <div class="total-item">
+                            <span>Subtotal Mano de Obra:</span>
+                            <span>$<%= totales.manoObra.toFixed(2) %></span>
+                        </div>
+                        <div class="total-item">
+                            <span>Subtotal Materiales:</span>
+                            <span>$<%= totales.materiales.toFixed(2) %></span>
+                        </div>
+                        <div class="total-item total-final">
+                            <span>TOTAL GENERAL:</span>
+                            <span>$<%= totales.general.toFixed(2) %></span>
+                        </div>
+                    </div>
+
+                    <% if (cotizacion.observaciones) { %>
+                        <div class="info-section">
+                            <h4>Observaciones de la Cotización</h4>
+                            <p><%= cotizacion.observaciones %></p>
+                        </div>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <div class="info-section">
+                    <h3>Estado del Servicio</h3>
+                    <p><strong>Estado actual:</strong> <%= orden.estado %></p>
+                    <p>No se ha generado cotización para esta orden.</p>
+                </div>
+            <% } %>
+
+            <div class="report-footer">
+                <p>Este reporte fue generado el <%= fechaReporte.toLocaleString('es-ES') %></p>
+                <p>ROCKETGS - Servicios de Reparación y Mantenimiento</p>
+            </div>
+
+            <div class="navigation-buttons" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
+                <button onclick="history.back()" class="btn">Volver</button>
+                <a href="/recepcion/ordenes" class="btn">Lista de Órdenes</a>
+                <a href="/recepcion/dashboard" class="btn">Dashboard</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html> 
